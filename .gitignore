@@ -1,0 +1,4 @@
+.env
+clearvolumes.sh
+wordpress
+nginx-conf/options-ssl-nginx.conf
