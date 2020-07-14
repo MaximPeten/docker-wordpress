@@ -1,4 +1,6 @@
 .env
 clearvolumes.sh
+download.sh
+ssl_renew.sh
 wordpress
 nginx-conf/options-ssl-nginx.conf

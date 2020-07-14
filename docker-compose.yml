@@ -1,4 +1,15 @@
-version: '3'
+version: '3.3'
+
+volumes:
+  certbot-etc: {}
+  wordpress: {}
+  dbdata: {}
+
+secrets:
+  docker_host:
+    file: /root/.ssh/docker_host
+  cron-ssh:
+    file: /home/ec2-user/.ssh/cron-ssh
 
 services:
   db:
@@ -27,8 +38,6 @@ services:
       - WORDPRESS_DB_USER=$MYSQL_USER
       - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
       - WORDPRESS_DB_NAME=wordpress
-    ports:
-      - "4444:22"
     volumes:
       - wordpress:/var/www/html
     networks:
@@ -56,8 +65,19 @@ services:
     environment:
       - SSH_KEY=$SSH_KEY
       - SSH_USER=$SSH_USER
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - D_HOST=$D_HOST
+      - HOST_USER=$HOST_USER
+      - SLACK_USER=$SLACK_USER
+      - SLACK_TOKEN=$SLACK_TOKEN
+      - SLACK_CHANNEL=$SLACK_CHANNEL
+      - SLACK_MESSAGE=$SLACK_MESSAGE
     ports:
       - "2222:22"
+    volumes:
+      - wordpress:/opt/wordpress
+    secrets:
+      - docker_host
     networks:
       - app-network
 
@@ -66,8 +86,8 @@ services:
     container_name: cron
     environment:
      - JOB=$JOB
-    ports:
-     - "5555:22"
+    secrets:
+     - cron-ssh
     networks:
      - app-network
 
@@ -80,11 +100,6 @@ services:
       - certbot-etc:/etc/letsencrypt
       - wordpress:/var/www/html
     command: certonly --webroot --webroot-path=/var/www/html --email m.maingml@gmail.com --agree-tos --no-eff-email --force-renewal -d meetme-today.com -d www.meetme-today.com
-
-volumes:
-  certbot-etc:
-  wordpress:
-  dbdata:
 
 networks:
   app-network:
