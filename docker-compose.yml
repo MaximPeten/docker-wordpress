@@ -3,7 +3,10 @@ version: '3.3'
 volumes:
   certbot-etc: {}
   wordpress: {}
+  wp-plugins: {}
   dbdata: {}
+  vsftpd: {}
+  vsftpd-log: {}
 
 secrets:
   docker_host:
@@ -40,6 +43,7 @@ services:
       - WORDPRESS_DB_NAME=wordpress
     volumes:
       - wordpress:/var/www/html
+      - wp-plugins:/var/www/html/wp-content/plugins
     networks:
       - app-network
 
@@ -88,6 +92,21 @@ services:
      - JOB=$JOB
     secrets:
      - cron-ssh
+    networks:
+     - app-network
+
+  ftp:
+    image: mpeten/vsftpd
+    container_name: ftp
+    environment:
+     - FTP_USER=$FTP_USER
+     - FTP_PASS=$FTP_PASS
+    ports:
+     - "21:21"
+    volumes:
+     - vsftpd:/home/vsftpd
+     - vsftpd-log:/var/log/vsftpd
+     - wp-plugins:/home/vsftpd/$FTP_USER/plugins
     networks:
      - app-network
 
