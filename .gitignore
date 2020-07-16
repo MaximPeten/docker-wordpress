@@ -2,4 +2,3 @@
 clearvolumes.sh
 download.sh
 ssl_renew.sh
-nginx-conf/options-ssl-nginx.conf
