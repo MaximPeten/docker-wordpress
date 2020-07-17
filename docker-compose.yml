@@ -10,7 +10,7 @@ volumes:
 
 secrets:
   docker_host:
-    file: /root/.ssh/docker_host
+    file: /home/ec2-user/.ssh/docker_host
   cron-ssh:
     file: /home/ec2-user/.ssh/cron-ssh
 
@@ -89,7 +89,7 @@ services:
     image: mpeten/crond
     container_name: cron
     environment:
-     - JOB=$JOB
+     - JOB=* * * * * ssh -o StrictHostKeyChecking=no -i "/run/secrets/cron-ssh" max@ssh /home/max/db_backup-env-new.sh | grep -v "2020" >> /opt/crontab/logs/backup.log
     secrets:
      - cron-ssh
     networks:
