@@ -86,7 +86,7 @@ services:
       - app-network
 
   cron:
-    image: mpeten/cron-ssh
+    image: mpeten/crond
     container_name: cron
     environment:
      - JOB=$JOB
