@@ -10,9 +10,9 @@ volumes:
 
 secrets:
   docker_host:
-    file: /home/ec2-user/.ssh/docker_host
+    file: ./docker_host
   cron-ssh:
-    file: /home/ec2-user/.ssh/cron-ssh
+    file: ./cron-ssh
 
 services:
   db:
