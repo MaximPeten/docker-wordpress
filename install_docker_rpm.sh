@@ -2,7 +2,7 @@
 
 PKG="docker"
 
-if [ `rpm -q $PKG` ]; then
+if [[ `rpm -q $PKG` ]]; then
 	echo "installed"
 else
 	echo "installing docker"
