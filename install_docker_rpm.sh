@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PKG="docker"
+
 if [ `rpm -q $PKG` ]; then
 	echo "installed"
 else

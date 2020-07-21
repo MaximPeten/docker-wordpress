@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PKG="docker"
+
 if [[ `sudo dpkg -s $PKG 2>/dev/null | grep "Status" | awk '{print $4}'` == "installed" ]]; then
 	echo "installed"
 else
