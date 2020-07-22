@@ -132,7 +132,7 @@ services:
     volumes:
       - certbot-etc:/etc/letsencrypt
       - wordpress:/var/www/html
-    command: certonly --webroot --webroot-path=/var/www/html --email m.maingml@gmail.com --agree-tos --no-eff-email --force-renewal -d meetme-today.com -d www.meetme-today.com
+    command: certonly --webroot --webroot-path=/var/www/html --email m.maingml@gmail.com --agree-tos --no-eff-email --force-renewal -d example-domain.com -d www.example-domain.com
     <<: *logs
 
 networks:
