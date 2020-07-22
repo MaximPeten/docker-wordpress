@@ -1,4 +1,12 @@
-version: '3.3'
+version: '3.7'
+
+x-anchors:
+  - &logs
+    logging:
+      driver: json-file
+      options:
+        max-file: '5'
+        max-size: 20m
 
 volumes:
   certbot-etc: {}
@@ -28,6 +36,7 @@ services:
     command: '--default-authentication-plugin=mysql_native_password'
     networks:
       - app-network
+    <<: *logs
 
   wordpress:
     depends_on: 
@@ -46,6 +55,7 @@ services:
       - wp-plugins:/var/www/html/wp-content/plugins
     networks:
       - app-network
+    <<: *logs
 
   webserver:
     depends_on:
@@ -62,6 +72,7 @@ services:
       - certbot-etc:/etc/letsencrypt
     networks:
       - app-network
+    <<: *logs
 
   ssh:
     image: mpeten/sshd
@@ -84,6 +95,7 @@ services:
       - docker_host
     networks:
       - app-network
+    <<: *logs
 
   cron:
     image: mpeten/crond
@@ -94,6 +106,7 @@ services:
      - cron-ssh
     networks:
      - app-network
+    <<: *logs
 
   ftp:
     image: mpeten/vsftpd
@@ -109,6 +122,7 @@ services:
      - wp-plugins:/home/vsftpd/$FTP_USER/plugins
     networks:
      - app-network
+    <<: *logs
 
   certbot:
     depends_on:
@@ -119,6 +133,7 @@ services:
       - certbot-etc:/etc/letsencrypt
       - wordpress:/var/www/html
     command: certonly --webroot --webroot-path=/var/www/html --email m.maingml@gmail.com --agree-tos --no-eff-email --force-renewal -d meetme-today.com -d www.meetme-today.com
+    <<: *logs
 
 networks:
   app-network:
