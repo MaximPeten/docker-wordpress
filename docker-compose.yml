@@ -80,6 +80,7 @@ services:
     environment:
       - SSH_KEY=$SSH_KEY
       - SSH_USER=$SSH_USER
+      - SSH_CONTAINER_KEY=$SSH_CONTAINER_KEY
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
       - D_HOST=$D_HOST
       - HOST_USER=$HOST_USER
