@@ -18,9 +18,9 @@ volumes:
 
 secrets:
   docker_host:
-    file: ./docker_host
+    file: $DOCKER_HOST_KEY
   cron-ssh:
-    file: ./cron-ssh
+    file: $SSH_CONTAINER_KEY
 
 services:
   db:
