@@ -102,7 +102,7 @@ services:
     image: mpeten/crond
     container_name: cron
     environment:
-     - JOB=* * * * * ssh -o StrictHostKeyChecking=no -i "/run/secrets/ssh_container_key" max@ssh /home/max/db_backup-env-new.sh | grep -v "2020" >> /opt/crontab/logs/backup.log
+     - JOB=* * * * * ssh -o StrictHostKeyChecking=no -i "/run/secrets/$DOCKER_HOST_KEY" max@ssh /home/max/db_backup-env-new.sh | grep -v "2020" >> /opt/crontab/logs/backup.log
     secrets:
      - ssh_container_key
     networks:
