@@ -18,18 +18,19 @@ volumes:
 
 secrets:
   docker_host_key:
-    file: $DOCKER_HOST_KEY
+    file: ${DOCKER_HOST_KEY}
   ssh_container_key:
-    file: $SSH_CONTAINER_KEY
+    file: ${SSH_CONTAINER_KEY}
 
 services:
   db:
     image: mysql:8.0
     container_name: db
     restart: unless-stopped
-    env_file: .env
     environment:
-      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=wordpress
     volumes: 
       - dbdata:/var/lib/mysql
@@ -44,11 +45,13 @@ services:
     image: wordpress:5.4.1-fpm-alpine
     container_name: wordpress
     restart: unless-stopped
-    env_file: .env
     environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - WORDPRESS_DB_HOST=db:3306
-      - WORDPRESS_DB_USER=$MYSQL_USER
-      - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
+      - WORDPRESS_DB_USER=${MYSQL_USER}
+      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
       - WORDPRESS_DB_NAME=wordpress
     volumes:
       - wordpress:/var/www/html
@@ -78,16 +81,16 @@ services:
     image: mpeten/sshd
     container_name: ssh
     environment:
-      - SSH_KEY=$SSH_KEY
-      - SSH_USER=$SSH_USER
-      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
-      - D_HOST=$D_HOST
-      - HOST_USER=$HOST_USER
-      - SLACK_USER=$SLACK_USER
-      - SLACK_TOKEN=$SLACK_TOKEN
-      - SLACK_CHANNEL=$SLACK_CHANNEL
-      - SLACK_MESSAGE=$SLACK_MESSAGE
-      - DOCKER_HOST_KEY=$DOCKER_HOST_KEY
+      - SSH_KEY=${SSH_KEY}
+      - SSH_USER=${SSH_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - D_HOST=${D_HOST}
+      - HOST_USER=${HOST_USER}
+      - SLACK_USER=${SLACK_USER}
+      - SLACK_TOKEN=${SLACK_TOKEN}
+      - SLACK_CHANNEL=${SLACK_CHANNEL}
+      - SLACK_MESSAGE=${SLACK_MESSAGE}
+      - DOCKER_HOST_KEY=${DOCKER_HOST_KEY}
     ports:
       - "2222:22"
     volumes:
@@ -102,7 +105,7 @@ services:
     image: mpeten/crond
     container_name: cron
     environment:
-     - JOB=* * * * * ssh -o StrictHostKeyChecking=no -i "/run/secrets/$SSH_CONTAINER_KEY" max@ssh /home/max/db_backup-env-new.sh | grep -v "2020" >> /opt/crontab/logs/backup.log
+     - JOB=* * * * * ssh -o StrictHostKeyChecking=no -i "/run/secrets/${SSH_CONTAINER_KEY}" max@ssh /home/max/db_backup-env-new.sh | grep -v "2020" >> /opt/crontab/logs/backup.log
     secrets:
      - ssh_container_key
     networks:
@@ -113,14 +116,14 @@ services:
     image: mpeten/vsftpd
     container_name: ftp
     environment:
-     - FTP_USER=$FTP_USER
-     - FTP_PASS=$FTP_PASS
+     - FTP_USER=${FTP_USER}
+     - FTP_PASS=${FTP_PASS}
     ports:
      - "21:21"
     volumes:
      - vsftpd:/home/vsftpd
      - vsftpd-log:/var/log/vsftpd
-     - wp-plugins:/home/vsftpd/$FTP_USER/plugins
+     - wp-plugins:/home/vsftpd/${FTP_USER}/plugins
     networks:
      - app-network
     <<: *logs
